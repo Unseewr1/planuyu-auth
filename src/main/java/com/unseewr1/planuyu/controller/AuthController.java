@@ -28,6 +28,10 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserDTO userDTO) {
         try {
+            if (userService.findByUsername(userDTO.getUsername()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .build();
+            }
             userService.createUser(userDTO);
             return ResponseEntity.ok().body(new AuthResponseDTO(true, "User was registered successfully!"));
         } catch (Exception e) {
